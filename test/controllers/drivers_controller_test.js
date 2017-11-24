@@ -32,7 +32,7 @@ describe('Drivers controller', () => {
     driver.save().then((driver) => {
       console.log(driver);
       request(app)
-        .put('/api/driver/' + driver._id)
+        .put('/api/drivers/' + driver._id)
         .send({
           driving: true
         })
@@ -51,19 +51,49 @@ describe('Drivers controller', () => {
 
   it('DELETE driver', (done) => {
     const driver = new Driver({
-      email: "driver",
+      email: "driver@driver.com",
 
     });
     driver.save().then((driver) => {
       console.log(driver);
       request(app)
-        .delete('/api/driver/' + driver._id)
+        .delete('/api/drivers/' + driver._id)
         .end(() => {
           Driver.count().then((count) => {
             assert(count === 0);
             done();
-          })
-        })
-    })
-  })
+          });
+        });
+    });
+  });
+
+  it('GET to /api/drivers finds drivers in a location', done => {
+    const driverSeattle = new Driver({
+      email: 'seattle@test.com',
+      geometry: {
+        type: 'Point',
+        coordinates: [-122.475, 47.614]
+      }
+    });
+    const driverMiami = new Driver({
+      email: 'miami@test.com',
+      geometry: {
+        type: 'Point',
+        coordinates: [-80.253, 25.791]
+      }
+    });
+
+    Promise.all([
+      driverSeattle.save(),
+      driverMiami.save()
+    ])
+      .then((drivers) => {
+        console.log(drivers)
+        request(app)
+          .get('/api/drivers?lng=-80&lat=25')
+          .end(err, response) => {
+            console.log(response);
+          }
+      });
+  });
 });
