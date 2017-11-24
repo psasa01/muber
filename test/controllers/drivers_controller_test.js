@@ -91,9 +91,9 @@ describe('Drivers controller', () => {
         console.log(drivers)
         request(app)
           .get('/api/drivers?lng=-80&lat=25')
-          .end(err, response) => {
+          .end((err, response) => {
             console.log(response);
-          }
+          });
       });
   });
 });

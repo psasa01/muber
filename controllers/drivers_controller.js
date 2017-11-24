@@ -6,18 +6,22 @@ module.exports = {
       hi: 'there'
     });
   },
-  
-  index(req,res,next) {
-    const { lng, lat } = req.query;
-    
-    Driver.geoNear(
-    { type: 'Point', coordinates: [lng, lat] },
-      { spherical: true, 
+
+  index(req, res, next) {
+    const {
+      lng,
+      lat
+    } = req.query;
+
+    Driver.geoNear({
+        type: 'Point',
+        coordinates: [lng, lat]
+      }, {
+        spherical: true,
         maxDistance: 200000
-      }
-    )
-    .then(drivers => res.send(drivers))
-    .catch(next);
+      })
+      .then(drivers => res.send(drivers))
+      .catch(next);
   },
 
   create(req, res, next) {
